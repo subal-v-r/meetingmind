@@ -45,7 +45,10 @@ export const ActionItemsPanel = ({ actionItems, recordingId, onUpdated }: Action
                 <div className="w-12 h-12 bg-slate-50 flex items-center justify-center rounded-2xl border border-slate-100">
                     <ListTodo size={24} className="opacity-50 text-slate-500" />
                 </div>
-                <p className="text-sm font-medium">No action items detected.</p>
+                <div className="text-center">
+                    <p className="text-sm font-semibold text-slate-700">No action items found</p>
+                    <p className="text-xs mt-1 max-w-[200px] leading-relaxed mx-auto">Action items extracted from your meetings will appear here.</p>
+                </div>
             </div>
         );
     }
@@ -115,7 +118,7 @@ export const ActionItemsPanel = ({ actionItems, recordingId, onUpdated }: Action
                                     className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-900 resize-none focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 placeholder-slate-400"
                                     placeholder="Task description..."
                                 />
-                                <div className="grid grid-cols-2 gap-2">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                                     <div className="relative">
                                         <User size={14} className="absolute left-2.5 top-2.5 text-slate-400 pointer-events-none" />
                                         <input
@@ -123,6 +126,15 @@ export const ActionItemsPanel = ({ actionItems, recordingId, onUpdated }: Action
                                             onChange={e => setDraft({ ...draft, assignee: e.target.value })}
                                             className="w-full bg-white border border-slate-300 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
                                             placeholder="Assignee"
+                                        />
+                                    </div>
+                                    <div className="relative">
+                                        <Clock size={14} className="absolute left-2.5 top-2.5 text-slate-400 pointer-events-none" />
+                                        <input
+                                            value={draft.deadline || ''}
+                                            onChange={e => setDraft({ ...draft, deadline: e.target.value || null })}
+                                            className="w-full bg-white border border-slate-300 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-900 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 placeholder-slate-400"
+                                            placeholder="Due date"
                                         />
                                     </div>
                                     <div className="relative">

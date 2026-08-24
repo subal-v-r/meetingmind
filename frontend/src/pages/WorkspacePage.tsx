@@ -56,8 +56,8 @@ export const WorkspacePage = () => {
             {!activeWorkspaceId ? (
                 <div className="flex-1 flex flex-col items-center justify-center text-slate-500 animate-fade-in">
                     <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm max-w-sm text-center">
-                        <h2 className="text-xl font-display font-semibold text-slate-900 mb-2">Welcome to MeetingMind</h2>
-                        <p className="text-slate-500 text-sm">Select or create a workspace to start transcribing your meetings.</p>
+                        <h2 className="text-xl font-display font-semibold text-slate-900 mb-2">No workspaces yet</h2>
+                        <p className="text-slate-500 text-sm">Create one to start organizing your meetings.</p>
                     </div>
                 </div>
             ) : (

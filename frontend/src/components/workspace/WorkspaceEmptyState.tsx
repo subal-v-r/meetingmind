@@ -15,11 +15,11 @@ export const WorkspaceEmptyState = ({ workspaceId, onUploadSuccess }: WorkspaceE
                 </div>
 
                 <h2 className="text-2xl font-display font-bold text-slate-900 mb-3 tracking-tight">
-                    Welcome to MeetingMind
+                    No recordings yet
                 </h2>
 
                 <p className="text-slate-500 mb-2 leading-relaxed text-sm">
-                    Select or create a workspace to start transcribing your meetings. Upload an audio or video file, and our AI will extract key decisions and action items.
+                    Upload an audio or video recording to get started. Our AI will automatically extract transcripts, key decisions, and action items.
                 </p>
                 <p className="text-slate-400 mb-8 text-xs font-mono">
                     Supported: MP3, WAV, M4A, OGG, MP4, WebM, MOV
