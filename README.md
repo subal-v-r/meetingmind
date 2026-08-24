@@ -1,183 +1,192 @@
-# 🧠 MeetingMind
+# MeetingMind
 
-> Turn meeting recordings into structured insights — transcript, summary, key decisions, and action items — inside a modern, persistent, ChatGPT-style Workspace. Powered by OpenAI Whisper and GPT-4o-mini.
+MeetingMind is an AI-powered meeting intelligence application designed to seamlessly organize your meetings and automatically extract value from your conversations. Simply upload your audio or video recordings, and MeetingMind will transcribe the meeting, generate an executive summary, extract key decisions, and track actionable items with their respective assignees and deadlines. You can even chat with an AI meeting assistant directly about your meetings, export the Minutes of Meeting (MOM), and organize everything across dedicated workspaces.
 
-[![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python)](https://python.org)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.111-green?logo=fastapi)](https://fastapi.tiangolo.com)
-[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)](https://reactjs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.2-blue?logo=typescript)](https://www.typescriptlang.org)
+## 🖼️ Preview
 
----
+### Home Page & Workspace
+![MeetingMind Home Page](./images/homepage.png)
+![MeetingMind Workspace](./images/workspace.png)
+
+### Recording, Video Replay & Transcript
+![Video Replay and Transcript](./images/video-replay-transcript.png)
+
+### Meeting Intelligence (Summary, Decisions & Action Items)
+![Meeting Summary](./images/meeting-summary.png)
+![Meeting Decisions](./images/decisions.png)
+![Meeting Action Items](./images/action-items.png)
+
+### AI Meeting Assistant
+![Meeting Assistant](./images/meeting-assistant.png)
+
+### Minutes of Meeting (MOM) Export
+![Export MOM](./images/export-mom.png)
 
 ## ✨ Features
 
-- **Multi-Workspace Environment** — Organize your recordings by project/company via persistent chat workspaces.
-- **Audio & Video Upload** — Supports MP3, WAV, M4A, MP4, OGG, WebM (up to 25 MB).
-- **Synchronized Media Player** — Click a transcript segment to instantly seek the video/audio to that exact moment.
-- **AI Transcription** — OpenAI Whisper converts speech to text accurately with precise timestamps.
-- **Meeting Intelligence Dashboard** — Tabbed panels for Executive Summary, Key Decisions, and Action Items with assignees and deadlines.
-- **AI Workspace Chat** — A ChatGPT-style chat that allows you to query information across ALL recordings within a workspace (multi-document RAG).
-- **MOM Generation Engine** — Dynamically output formal Minutes of Meetings (MOM) as instantly downloadable Markdown documents.
+### 🎙️ Audio & Video Processing
+- **Format Support:** Upload supported audio and video recordings (MP3, WAV, M4A, OGG, MP4, WebM, MOV)
+- **Transcription Engine:** Automatic speech-to-text transcription powered by advanced AI models
+- **Live Transcript:** Timestamped and speaker-organized transcript automatically synced to the media player
 
----
+### 🧠 Meeting Intelligence
+- **Executive Summary:** Automatically generates concise meeting overviews
+- **Key Highlights:** Points out the most important topics discussed
+- **Decision Extraction:** Tracks critical decisions agreed upon by the team
+- **Action Item Extraction:** Extracts actionable tasks directly from the conversation
 
-## 🏗️ Architecture
+### ✅ Action Item Management
+- View extracted action items
+- Update and edit action items manually
+- Assign action items to team members
+- Manage due dates
+- Track task status (Pending, In Progress, Completed)
 
-```
-AI Pipeline: Media → Whisper (ASR) → GPT-4o-mini (LLM) → SQLite → React Dashboard
-```
+### 💬 AI Meeting Assistant
+- Ask questions about recordings and meetings within your workspace
+- Uses context from the meeting transcript to provide accurate answers
 
-Both ASR and LLM providers implement protocol interfaces (`ASRProvider`, `LLMProvider`) to easily allow future engine swapping (e.g., Anthropic, Groq, local models) without changing core services.
+### 📄 Export
+- **Minutes of Meeting (MOM):** Effortlessly export structured meeting notes, intelligence, and decisions directly into a portable document.
 
----
+### 📂 Workspace Organization
+- Create, rename, and manage workspaces to stay organized
+- Store multiple recordings inside dedicated workspaces
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React 18, TypeScript, Vite, Tailwind CSS, Lucide Icons |
-| Backend | Python 3.11+, FastAPI, Uvicorn, Pydantic v2 |
-| Database | SQLite via SQLAlchemy |
-| ASR | OpenAI Whisper API (`whisper-1`) |
-| LLM | OpenAI GPT-4o-mini (JSON mode + Pydantic validation) |
+**Frontend:**
+- React (18.x)
+- Vite
+- TypeScript
+- Tailwind CSS
+- React Router DOM
+- Icons provided by Lucide React
 
----
+**Backend:**
+- FastAPI (Python)
+- SQLite Database (SQLAlchemy)
+- Pydantic (Data validation and settings management)
+- Uvicorn (ASGI server)
+
+**AI & Processing:**
+- [Groq](https://groq.com) LLM Provider for rapid inference
+- Speech-to-Text: `whisper-large-v3-turbo` model for transcription
+- Chat & Intelligence: `openai/gpt-oss-20b` or other configured Groq supported chat models
+
+## 🏗️ Project Architecture
+
+```
+User
+  ↓
+React Frontend (Vite + Tailwind)
+  ↓
+FastAPI Backend
+  ├── Workspace Management
+  ├── Recording Processing (Background Tasks)
+  ├── Transcription Service (Groq Whisper)
+  ├── AI Analysis (Groq LLM)
+  ├── Meeting Assistant
+  └── Action Item Management
+  ↓
+SQLite Database (SQLAlchemy)
+```
 
 ## 📁 Project Structure
 
 ```
-Meeting_summarizer/
-│
+MeetingMind/
 ├── backend/
 │   ├── app/
-│   │   ├── api/routes/          # Workspaces, recordings, chat routes
-│   │   ├── services/
-│   │   │   ├── providers/       # LLM/ASR OpenAI abstractions
-│   │   │   └── *service.py      # Recording, Chat, and MOM services
-│   │   ├── models/              # SQLAlchemy (Workspace, Recording, ChatMessage)
-│   │   ├── schemas/             # Pydantic validation interfaces
-│   │   └── main.py              # FastAPI init
-│   ├── .env.example
+│   │   ├── api/
+│   │   │   └── routes/      # Endpoints (workspaces, recordings, chat)
+│   │   ├── core/
+│   │   ├── database/
+│   │   ├── schemas/         # Pydantic validation models
+│   │   └── services/        # AI orchestration and processing logic
+│   ├── uploads/             # Temporary folder for media uploads
 │   └── requirements.txt
-│
 ├── frontend/
 │   ├── src/
-│   │   ├── components/
-│   │   │   ├── layout/          # Sidebar, Main content layout
-│   │   │   ├── intelligence/    # Summary, Decisions, Actions, MOM modals
-│   │   │   ├── player/          # Media player
-│   │   │   ├── transcript/      # Sync scrolling logic
-│   │   │   └── workspace/       # Chat, File Uploaders
-│   │   ├── pages/               # WorkspacePage, RecordingPage
-│   │   ├── services/api.ts
-│   │   └── hooks/               # Polling and media synchronization hooks
-│   ├── .env.example
-│   └── package.json
-│
-├── .gitignore
+│   │   ├── components/      # UI components (Intelligence, Layout, Player, Workspace)
+│   │   ├── pages/           # Application views (Home, Recording, Workspace)
+│   │   ├── services/        # APIs
+│   │   └── types/           # Global TypeScript definitions
+│   ├── package.json
+│   ├── tailwind.config.js
+│   └── index.html
+├── images/                  # Repository preview images
 └── README.md
 ```
 
----
-
-## ⚙️ Setup Instructions
+## 🚀 Local Setup and Installation
 
 ### Prerequisites
-- Python 3.11+
-- Node.js 18+
-- An **OpenAI API key** with access to `whisper-1` and `gpt-4o-mini`
+Make sure you have the following installed on your machine:
+- Node.js (v18+ recommended)
+- Python (v3.9+ recommended)
+- pip
+- Git
+- A [Groq API Key](https://console.groq.com/keys)
 
----
-
-### 1. Clone the repository
-
-```bash
-git clone <repo-url>
-cd Meeting_summarizer
-```
-
----
-
-### 2. Backend Setup & Database
-
-The backend default uses SQLite. **No external database server is required.** The SQLite database is automatically created locally on the first backend startup.
+### Clone the repository
 
 ```bash
-cd backend
-python -m venv venv
-
-# Windows
-venv\Scripts\activate
-# macOS/Linux
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Configure environment variables
-cp .env.example .env
-# Edit .env and add your OPENAI_API_KEY
+git clone https://github.com/subal-v-r/meetingmind.git
+cd meetingmind
 ```
 
----
+### Backend Setup
 
-### 3. Frontend Setup
+1. Navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+2. Create and activate a Python virtual environment:
+   ```bash
+   python -m venv venv
+   # On Windows
+   venv\Scripts\activate
+   # On macOS/Linux
+   source venv/bin/activate
+   ```
+3. Install Python dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Set up environment variables:
+   Copy `.env.example` to `.env` and insert your API keys:
+   ```bash
+   cp .env.example .env
+   ```
+   *Required Keys in `.env`:*
+   ```env
+   GROQ_API_KEY=your_groq_api_key_here
+   GROQ_WHISPER_MODEL=whisper-large-v3-turbo
+   GROQ_LLM_MODEL=openai/gpt-oss-20b
+   ```
+5. Start the FastAPI development server:
+   ```bash
+   uvicorn app.main:app --reload --port 8000
+   ```
+   The backend should now be running at `http://localhost:8000`.
 
-```bash
-cd frontend
-npm install
+### Frontend Setup
 
-# Configure environment variables
-cp .env.example .env
-# VITE_API_BASE_URL securely points to local backend route
-```
-
----
-
-## 🚀 Running the Application
-
-### Start the backend (from `/backend`):
-
-```bash
-uvicorn app.main:app --reload --port 8000
-```
-API docs: `http://localhost:8000/docs`
-
-### Start the frontend (from `/frontend`):
-
-```bash
-npm run dev
-```
-Frontend: `http://localhost:5173`
-
-> 💡 Keep both terminals open while using the app.
-
----
-
-## 🌍 Environment Variables
-
-### `backend/.env`
-| Variable | Description | Default |
-|---|---|---|
-| `OPENAI_API_KEY` | **Required.** Your OpenAI API key | — |
-| `DATABASE_URL` | SQLite DB path | `sqlite:///./meeting_ai.db` |
-| `UPLOAD_DIR` | Recordings directory | `uploads` |
-| `FRONTEND_URL` | CORS frontend origin | `http://localhost:5173` |
-
-### `frontend/.env`
-| Variable | Description | Default |
-|---|---|---|
-| `VITE_API_BASE_URL` | Backend API base URL | `http://localhost:8000` |
-
----
-
-## 💡 Example Workflow
-
-1. Open `http://localhost:5173`
-2. At the left sidebar, click **New Workspace** to create a fresh working context.
-3. Drag and drop a recording into the workspace.
-4. Watch the processing animation as the backend automatically extracts transcription and intelligence via Async Jobs.
-5. Once completed, click the recording to enter the Media Dashboard.
-6. Play the media, watch the captions highlight synchronously, and review the structured AI Action items instantly.
-7. Return to the Workspace to chat with the AI about everything discussed.
-8. Click **Generate MOM** for an instant copy-able Markdown summary to report back to your team.
+1. Open a new terminal and navigate to the frontend directory:
+   ```bash
+   cd frontend
+   ```
+2. Install Node dependencies:
+   ```bash
+   npm install
+   ```
+3. Set up frontend environment variables (optional):
+   ```bash
+   cp .env.example .env
+   ```
+4. Start the React development server:
+   ```bash
+   npm run dev
+   ```
+5. Open your browser and navigate to `http://localhost:5173` to launch MeetingMind!
