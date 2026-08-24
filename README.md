@@ -9,7 +9,6 @@ MeetingMind is an AI-powered meeting intelligence application designed to seamle
 
 ### Workspace & AI Assistant
 ![MeetingMind Workspace](./images/workspace.png)
-![Meeting Assistant](./images/meeting-assistant.png)
 
 ### Recording, Video Replay & Transcript
 ![Video Replay and Transcript](./images/video-replay-transcript.png)
