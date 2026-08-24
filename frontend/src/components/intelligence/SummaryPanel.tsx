@@ -19,7 +19,7 @@ export const SummaryPanel = ({ summary, keyPoints }: SummaryPanelProps) => {
         <div className="space-y-6">
             <section>
                 <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-3">Executive Summary</h3>
-                <p className="text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100">
+                <p className="text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100 whitespace-pre-wrap">
                     {summary}
                 </p>
             </section>

@@ -16,13 +16,19 @@ export const ChatMessage = ({ role, content }: ChatMessageProps) => {
                 {isUser ? <User size={16} /> : <Bot size={16} />}
             </div>
 
-            {/* Content */}
             <div className="flex-1 text-slate-800 leading-relaxed max-w-[85ch]">
-                {content.split('\n').map((line, i) => (
-                    <p key={i} className="mb-2 last:mb-0 min-h-[1rem]">
-                        {line}
-                    </p>
-                ))}
+                {content
+                    .replace(/\*\*/g, '')
+                    .replace(/__/g, '')
+                    .replace(/###?\s/g, '')
+                    .replace(/\|/g, '')
+                    .replace(/<br\s*\/?>/gi, '\n')
+                    .split('\n')
+                    .map((line, i) => (
+                        <p key={i} className="mb-2 last:mb-0 min-h-[1rem] whitespace-pre-wrap">
+                            {line.trim()}
+                        </p>
+                    ))}
             </div>
         </div>
     );

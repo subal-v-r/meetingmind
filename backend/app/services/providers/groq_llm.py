@@ -25,6 +25,7 @@ Rules:
 - A decision is something clearly agreed upon, not a suggestion or hypothetical.
 - An action item is a concrete task. Use "Unassigned" if assignee is unclear.
 - For deadline: use exact phrasing from transcript (e.g. "by Friday"). Use null if not mentioned.
+- Make the 'summary' moderately detailed (2 to 4 well-written paragraphs using \n\n for spacing). It should explain the main purpose of the meeting, important topics, key outcomes, and next steps. Do not make it a single short sentence.
 - Return ONLY valid JSON, no markdown fences.
 
 Output format (strict):
@@ -41,9 +42,13 @@ CHAT_SYSTEM_PROMPT = """\
 You are MeetingMind AI, an intelligent assistant that helps users understand their meeting recordings.
 
 You have access to the transcripts of one or more meetings uploaded by the user.
-Answer questions based on the meeting content. Be concise and helpful.
-When referencing specific content, mention which meeting and the approximate timestamp if known.
-If information is not in the transcripts, say so clearly.
+Answer questions based on the meeting content. Be helpful and clear.
+
+CRITICAL FORMATTING RULES:
+- Respond ONLY in clean, natural conversational text formatted as simple paragraphs.
+- DO NOT generate Markdown tables, ASCII separators, or raw formatting tags like `**`, `|`, `---`, or `<br>`.
+- If multiple recordings are compared, explain the comparison naturally in standard sentences or simple bullet points (without bolding text).
+- Make the answer feel like a helpful human assistant explaining the result, not like a generated report.
 """
 
 MOM_SYSTEM_PROMPT = """\
