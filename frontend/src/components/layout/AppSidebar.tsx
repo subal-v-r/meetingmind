@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Plus, Pencil, Check, X, MoreHorizontal, Bot, Trash2, Mic, ChevronRight } from 'lucide-react';
 import {
     getWorkspaces, createWorkspace, renameWorkspace, deleteWorkspace,
@@ -69,12 +70,12 @@ export const AppSidebar = ({ activeWorkspaceId, onSelectWorkspace }: AppSidebarP
     return (
         <aside className="w-[280px] flex-shrink-0 h-full flex flex-col bg-white border-r border-slate-200">
             {/* Brand */}
-            <div className="h-16 flex items-center gap-3 px-6 border-b border-slate-200 flex-shrink-0 bg-white">
+            <Link to="/" className="h-16 flex items-center gap-3 px-6 border-b border-slate-200 flex-shrink-0 bg-white hover:bg-slate-50 transition-colors cursor-pointer outline-none focus:ring-inset focus:ring-2 focus:ring-indigo-500">
                 <div className="w-8 h-8 rounded-[10px] bg-indigo-600 flex items-center justify-center shadow-sm shadow-indigo-600/30 text-white">
                     <Mic size={16} strokeWidth={2.5} />
                 </div>
                 <span className="font-display font-bold text-slate-900 text-lg tracking-tight">MeetingMind</span>
-            </div>
+            </Link>
 
             {/* Workspace Label + Add */}
             <div className="flex items-center justify-between px-6 pt-5 pb-2 flex-shrink-0">
@@ -135,8 +136,8 @@ export const AppSidebar = ({ activeWorkspaceId, onSelectWorkspace }: AppSidebarP
                                     <button
                                         onClick={() => { setMenuOpenId(null); onSelectWorkspace(ws.id); }}
                                         className={`w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-sm transition-all group ${isActive
-                                                ? 'bg-indigo-50 text-indigo-900 font-semibold'
-                                                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium'
+                                            ? 'bg-indigo-50 text-indigo-900 font-semibold'
+                                            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium'
                                             }`}
                                     >
                                         <div className={`shrink-0 w-6 h-6 rounded-md flex items-center justify-center ${isActive ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200 group-hover:text-slate-700'}`}>

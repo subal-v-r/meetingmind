@@ -20,13 +20,13 @@ export const RecordingPage = () => {
 
     if (error) {
         return (
-            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-50">
+            <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-slate-50 h-screen">
                 <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mb-4">
                     <span className="text-2xl font-bold">!</span>
                 </div>
                 <h2 className="text-xl font-bold text-slate-800 mb-2">Failed to load recording</h2>
                 <p className="text-slate-500 max-w-md">{error}</p>
-                <button onClick={() => navigate('/')} className="mt-6 px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-900 transition-colors">
+                <button onClick={() => navigate('/app')} className="mt-6 px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-900 transition-colors">
                     Back to Workspace
                 </button>
             </div>
@@ -35,7 +35,7 @@ export const RecordingPage = () => {
 
     if (!recording) {
         return (
-            <div className="flex-1 flex items-center justify-center bg-slate-50">
+            <div className="flex-1 flex items-center justify-center bg-slate-50 h-screen">
                 <Loader2 size={32} className="animate-spin text-indigo-500" />
             </div>
         );
@@ -49,12 +49,12 @@ export const RecordingPage = () => {
         : '';
 
     return (
-        <div className="flex flex-col h-full bg-slate-50 animate-fade-in">
+        <div className="flex flex-col lg:h-screen min-h-screen bg-slate-50 animate-fade-in overflow-y-auto lg:overflow-hidden">
             {/* Top Navigation */}
             <div className="h-16 bg-white border-b border-slate-200 flex items-center px-6 justify-between flex-shrink-0">
                 <div className="flex items-center gap-4">
                     <button
-                        onClick={() => navigate('/')}
+                        onClick={() => navigate('/app')}
                         className="p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
                     >
                         <ArrowLeft size={20} />
@@ -77,10 +77,10 @@ export const RecordingPage = () => {
             </div>
 
             {/* Split Content Area */}
-            <div className="flex-1 overflow-hidden flex flex-col lg:flex-row p-6 gap-6 max-w-[1600px] mx-auto w-full">
+            <div className="flex-1 flex flex-col lg:flex-row p-6 gap-6 max-w-[1600px] mx-auto w-full lg:overflow-hidden">
 
                 {/* Left Side: Player + Transcript */}
-                <div className="flex-1 flex flex-col min-w-0 flex-shrink gap-6 h-full">
+                <div className="flex-1 flex flex-col min-w-0 flex-shrink gap-6 lg:h-full">
                     {/* Media Player */}
                     {isProcessing ? (
                         <div className="w-full bg-slate-900 rounded-2xl p-8 flex flex-col items-center justify-center text-slate-400 aspect-video shadow-lg">
@@ -104,7 +104,7 @@ export const RecordingPage = () => {
                     )}
 
                     {/* Live Transcript Panel */}
-                    <div className="flex-1 min-h-0 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div className="flex-1 min-h-[400px] lg:min-h-0 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
                         <LiveTranscript
                             segments={segments}
                             activeSegmentIndex={activeSegmentIndex}

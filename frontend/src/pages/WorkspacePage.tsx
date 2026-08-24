@@ -10,7 +10,9 @@ import type { RecordingStatus } from '@/types/api';
 import { Loader2 } from 'lucide-react';
 
 export const WorkspacePage = () => {
-    const [activeWorkspaceId, setActiveWorkspaceId] = useState<string | null>(null);
+    const [activeWorkspaceId, setActiveWorkspaceId] = useState<string | null>(() => {
+        return localStorage.getItem('meetingmind_last_workspace_id');
+    });
     const [recordings, setRecordings] = useState<RecordingStatus[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
@@ -41,6 +43,7 @@ export const WorkspacePage = () => {
 
     const handleWorkspaceSelect = (id: string) => {
         setActiveWorkspaceId(id);
+        localStorage.setItem('meetingmind_last_workspace_id', id);
         fetchRecordings(id);
     };
 
