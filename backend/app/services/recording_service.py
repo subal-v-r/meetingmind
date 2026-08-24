@@ -1,6 +1,6 @@
 """
 Recording service — orchestrates the full background processing pipeline.
-Upload → Transcribe (Whisper) → Analyze (GPT-4o-mini) → Ready
+Upload → Transcribe (Groq Whisper) → Analyze (Groq LLM) → Ready
 """
 
 import os
@@ -9,16 +9,20 @@ from datetime import datetime, timezone
 from sqlalchemy.orm import Session
 
 from app.models.recording import Recording
-from app.services.providers.openai_asr import OpenAIASRProvider
-from app.services.providers.openai_llm import OpenAILLMProvider
+from app.services.providers.groq_asr import GroqASRProvider, GROQ_SUPPORTED_EXTENSIONS
+from app.services.providers.groq_llm import GroqLLMProvider
 from app.services.providers.base import TranscriptionError, AnalysisError
 from app.config import get_settings
 from app.core.logging import get_logger
 
 logger = get_logger(__name__)
 
-ALLOWED_EXTENSIONS = {".mp3", ".wav", ".m4a", ".mp4", ".ogg", ".webm", ".mov"}
-VIDEO_EXTENSIONS = {".mp4", ".webm", ".mov"}
+# All backed formats: what Groq Whisper directly accepts + video passthrough
+ALLOWED_EXTENSIONS = (
+    GROQ_SUPPORTED_EXTENSIONS  # .flac, .mp3, .mp4, .mpeg, .mpga, .m4a, .ogg, .wav, .webm
+    | {".mov", ".avi"}  # Common video — we'll note these may fail if file is too large
+)
+VIDEO_EXTENSIONS = {".mp4", ".webm", ".mov", ".avi"}
 
 
 def _utcnow():
@@ -57,8 +61,8 @@ class RecordingService:
     """
 
     def __init__(self):
-        self._asr = OpenAIASRProvider()
-        self._llm = OpenAILLMProvider()
+        self._asr = GroqASRProvider()
+        self._llm = GroqLLMProvider()
         self._settings = get_settings()
 
     def validate_file(self, filename: str, file_size: int, content_type: str | None) -> None:

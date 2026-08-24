@@ -7,26 +7,28 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    # OpenAI
-    openai_api_key: str = ""
+    # Groq
+    groq_api_key: str = ""
 
     # Database
-    database_url: str = "sqlite:///./meeting_ai.db"
+    database_url: str = "sqlite:///./meetingmind.db"
 
     # File upload
-    max_file_size_mb: int = 25
+    max_file_size_mb: int = 100  # App accepts up to 100 MB; files >25 MB are chunked for Groq
     allowed_mime_types: str = (
-        "audio/mpeg,audio/wav,audio/mp4,audio/x-m4a,audio/x-wav,"
-        "video/mp4,audio/ogg,audio/webm,video/webm,video/quicktime"
+        "audio/mpeg,audio/wav,audio/mp4,audio/x-m4a,audio/x-wav,audio/flac,"
+        "video/mp4,audio/ogg,audio/webm,video/webm,video/quicktime,audio/mp3,"
+        "audio/mpga,application/octet-stream"
     )
 
-    # LLM
-    openai_model: str = "gpt-4o-mini"
-    openai_whisper_model: str = "whisper-1"
+    # Groq Models
+    groq_llm_model: str = "openai/gpt-oss-20b"       # Chat completions model
+    groq_whisper_model: str = "whisper-large-v3-turbo"  # Audio transcription model
 
     # App
     debug: bool = False
     upload_dir: str = "uploads"
+    frontend_url: str = "http://localhost:5173"
 
     model_config = SettingsConfigDict(
         env_file=".env",

@@ -8,6 +8,9 @@ interface UploadRecordingButtonProps {
     size?: 'sm' | 'lg';
 }
 
+// All formats accepted by Groq Whisper + common video containers
+const ACCEPTED_FORMATS = '.mp3,.wav,.m4a,.flac,.ogg,.mpeg,.mpga,.mp4,.webm,.mov,.avi';
+
 export const UploadRecordingButton = ({ workspaceId, onUploadSuccess, size = 'sm' }: UploadRecordingButtonProps) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const [isUploading, setIsUploading] = useState(false);
@@ -39,29 +42,31 @@ export const UploadRecordingButton = ({ workspaceId, onUploadSuccess, size = 'sm
                 ref={inputRef}
                 className="hidden"
                 onChange={handleFileChange}
-                accept="audio/*,video/*"
+                accept={ACCEPTED_FORMATS}
             />
 
             <button
                 onClick={() => inputRef.current?.click()}
                 disabled={isUploading}
                 className={`
-                    flex items-center justify-center gap-2 font-medium transition-all
+                    flex items-center justify-center gap-2 font-medium transition-colors
                     ${isLg
-                        ? 'bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-6 rounded-xl text-lg shadow-sm hover:shadow-md'
-                        : 'bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 py-2 px-4 rounded-lg shadow-sm'
+                        ? 'bg-sage-600 hover:bg-sage-700 text-white py-3 px-6 rounded-xl text-base shadow-sm'
+                        : 'bg-[#fdfaf0] hover:bg-cream-200 border border-[#c9c0a0] text-ink py-2 px-4 rounded-lg shadow-sm text-sm'
                     }
                     ${isUploading ? 'opacity-70 cursor-not-allowed' : ''}
                 `}
             >
                 {isUploading ? (
-                    <><Loader2 className="animate-spin" size={isLg ? 20 : 18} /> Uploading...</>
+                    <><Loader2 className="animate-spin" size={isLg ? 20 : 16} /> Uploading...</>
                 ) : (
-                    <><Upload size={isLg ? 20 : 18} /> Upload Recording</>
+                    <><Upload size={isLg ? 20 : 16} /> Upload Audio / Video</>
                 )}
             </button>
 
-            {error && <div className="text-red-500 text-sm mt-2 font-medium">{error}</div>}
+            {error && (
+                <div className="text-red-600 text-sm mt-2 font-medium max-w-xs text-center">{error}</div>
+            )}
         </div>
     );
 };

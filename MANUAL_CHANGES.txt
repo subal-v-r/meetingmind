@@ -1,0 +1,106 @@
+================================================================================
+  MeetingMind — MANUAL CHANGES REQUIRED
+================================================================================
+
+The codebase has been updated to use Groq AI instead of OpenAI. No API keys
+are committed to the repository. Follow the steps below to get the project
+fully running.
+
+================================================================================
+  REQUIRED CHANGES
+================================================================================
+
+── 1. Get a FREE Groq API Key ───────────────────────────────────────────────
+
+  1. Open https://console.groq.com in your browser.
+  2. Sign up or log in with Google/GitHub (it's free).
+  3. Navigate to: API Keys → Create API Key.
+  4. Copy the key (it starts with "gsk_..."). Save it somewhere safe.
+
+── 2. Add GROQ_API_KEY to the Backend ───────────────────────────────────────
+
+  Open the file:
+    backend/.env
+
+  It should look like this:
+    GROQ_API_KEY=your_groq_api_key_here
+
+  Replace the placeholder:
+    GROQ_API_KEY=gsk_YOUR_ACTUAL_KEY_HERE
+
+  NOTE: Do NOT commit this file to Git (it is already in .gitignore).
+
+── 3. Install Updated Python Dependencies ────────────────────────────────────
+
+  Run in the backend directory:
+    cd backend
+    venv\Scripts\activate        (Windows)
+    source venv/bin/activate     (Mac/Linux)
+    pip install -r requirements.txt
+
+  NOTE: "openai" has been REMOVED. "groq" has been ADDED.
+  If you have an old virtual environment, re-installing will update it.
+
+── 4. Start the Application ──────────────────────────────────────────────────
+
+  a) Start the Backend (from the backend/ folder):
+       uvicorn app.main:app --reload --port 8000
+
+  b) Start the Frontend (from the frontend/ folder):
+       npm run dev
+
+  Visit: http://localhost:5173
+
+── 5. Supported File Formats ─────────────────────────────────────────────────
+
+  The following formats are supported for upload:
+    Audio: .mp3, .wav, .m4a, .flac, .ogg, .mpeg, .mpga
+    Video: .mp4, .webm, .mov, .avi
+
+  All files must be under 25 MB (Groq Whisper API limit).
+
+  NOTE: Groq officially supports audio-focused formats. For video, Groq
+  receives the file as-is. If the video file is very large or an
+  incompatible container, transcription may fail gracefully with a
+  user-readable error message.
+
+================================================================================
+  OPTIONAL CHANGES (Deployment)
+================================================================================
+
+── A. Production Backend Deployment (e.g., Render.com) ──────────────────────
+
+  1. Create a new Web Service on Render.
+  2. Set Build Command: pip install -r requirements.txt
+  3. Set Start Command: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+  4. Add Environment Variables in the Render dashboard:
+       GROQ_API_KEY=gsk_your_real_key
+       FRONTEND_URL=https://your-frontend.vercel.app
+       DATABASE_URL=sqlite:///./meetingmind.db
+  5. Enable Persistent Disk (at least 1GB) so the SQLite database
+     and uploaded recordings persist across restarts.
+
+── B. Production Frontend Deployment (e.g., Vercel) ─────────────────────────
+
+  1. Create a new project on Vercel and link your GitHub repo.
+  2. Build Command: npm run build  (from the frontend/ directory)
+  3. Output Directory: dist
+  4. Add Environment Variable in the Vercel dashboard:
+       VITE_API_BASE_URL=https://your-backend.onrender.com
+
+── C. Upgrade from SQLite to PostgreSQL (Optional) ──────────────────────────
+
+  If you need multi-instance deployments or high traffic:
+  1. Provision a PostgreSQL database (Railway, Supabase, or Render postgres).
+  2. Add to requirements.txt: psycopg2-binary
+  3. Change in backend/.env:
+       DATABASE_URL=postgresql://user:password@host:5432/dbname
+
+── D. Cloud File Storage (Optional) ──────────────────────────────────────────
+
+  By default, uploaded recordings are saved to a local "uploads/" directory.
+  For production deployments:
+  - Consider moving to AWS S3 or Cloudflare R2 for file storage.
+  - This requires a storage service module change in recording_service.py.
+
+================================================================================

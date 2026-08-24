@@ -51,14 +51,17 @@ export const WorkspacePage = () => {
     return (
         <MainLayout activeWorkspaceId={activeWorkspaceId} onSelectWorkspace={handleWorkspaceSelect}>
             {!activeWorkspaceId ? (
-                <div className="flex-1 flex items-center justify-center bg-slate-50 text-slate-400">
-                    Select or create a workspace to begin.
+                <div className="flex-1 flex flex-col items-center justify-center text-slate-500 animate-fade-in">
+                    <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm max-w-sm text-center">
+                        <h2 className="text-xl font-display font-semibold text-slate-900 mb-2">Welcome to MeetingMind</h2>
+                        <p className="text-slate-500 text-sm">Select or create a workspace to start transcribing your meetings.</p>
+                    </div>
                 </div>
             ) : (
-                <div className="flex flex-col h-full bg-slate-50">
+                <div className="flex flex-col h-full bg-slate-50 animate-fade-in">
                     {/* Header */}
-                    <div className="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between flex-shrink-0">
-                        <h1 className="font-bold text-slate-800 text-lg">Workspace</h1>
+                    <div className="h-16 bg-white border-b border-slate-200 px-8 flex items-center justify-between flex-shrink-0 z-10">
+                        <h1 className="font-display font-bold text-slate-900 text-xl tracking-tight">Workspace</h1>
                         <UploadRecordingButton workspaceId={activeWorkspaceId} onUploadSuccess={handleUploadSuccess} />
                     </div>
 
@@ -71,19 +74,21 @@ export const WorkspacePage = () => {
                         ) : recordings.length === 0 ? (
                             <WorkspaceEmptyState workspaceId={activeWorkspaceId} onUploadSuccess={handleUploadSuccess} />
                         ) : (
-                            <div className="flex flex-col lg:flex-row h-full p-6 gap-6 overflow-y-auto">
+                            <div className="flex flex-col lg:flex-row h-full p-6 gap-6 overflow-y-auto w-full max-w-[1600px] mx-auto">
                                 {/* Recordings List */}
-                                <div className="flex-1 lg:max-w-[60%]">
-                                    <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4">Recordings</h2>
-                                    <RecordingList
-                                        recordings={recordings}
-                                        onSelectRecording={(id) => navigate(`/recording/${id}`)}
-                                    />
+                                <div className="flex-1 lg:w-3/5 flex flex-col min-w-0">
+                                    <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-3">Recordings</h2>
+                                    <div className="bg-white border border-slate-200 p-5 rounded-3xl shadow-sm flex-1 min-h-0 overflow-y-auto">
+                                        <RecordingList
+                                            recordings={recordings}
+                                            onSelectRecording={(id) => navigate(`/recording/${id}`)}
+                                        />
+                                    </div>
                                 </div>
 
                                 {/* Workspace Chat */}
-                                <div className="flex-1 lg:max-w-[40%] h-[600px] lg:h-full pb-6">
-                                    <div className="h-full shadow-lg rounded-2xl">
+                                <div className="flex-1 lg:w-2/5 h-[600px] lg:h-full pb-6 flex flex-col min-w-0">
+                                    <div className="h-full bg-white shadow-sm rounded-3xl border border-slate-200 overflow-hidden">
                                         <WorkspaceChat workspaceId={activeWorkspaceId} />
                                     </div>
                                 </div>

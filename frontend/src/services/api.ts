@@ -74,6 +74,18 @@ export const reprocessRecording = async (id: string) => {
     return data;
 };
 
+export const updateActionItems = async (
+    recordingId: string,
+    actionItems: { task: string; assignee: string; deadline?: string | null; status: string }[]
+) => {
+    const { data } = await api.patch<T.RecordingDetail>(
+        `/api/recordings/${recordingId}/action-items`,
+        { action_items: actionItems }
+    );
+    return data;
+};
+
+
 // ─── Chat ────────────────────────────────────────────────────────────────────
 
 export const sendChatMessage = async (workspaceId: string, message: string) => {

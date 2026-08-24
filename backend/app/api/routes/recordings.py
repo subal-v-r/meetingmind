@@ -213,3 +213,54 @@ async def reprocess_recording(
     db.commit()
     background_tasks.add_task(_service.process_recording, recording_id, db)
     return UploadResponse(recording_id=recording_id, workspace_id=r.workspace_id, message="Reprocessing started.")
+
+
+# ─── Update Action Items ──────────────────────────────────────────────────────
+
+from pydantic import BaseModel
+from typing import Optional
+
+class ActionItemUpdate(BaseModel):
+    task: str
+    assignee: str = "Unassigned"
+    deadline: Optional[str] = None
+    status: str = "Pending"
+
+class ActionItemsUpdateRequest(BaseModel):
+    action_items: list[ActionItemUpdate]
+
+
+@router.patch("/api/recordings/{recording_id}/action-items", response_model=RecordingDetail)
+async def update_action_items(
+    recording_id: str,
+    body: ActionItemsUpdateRequest,
+    db: Session = Depends(get_db),
+):
+    """Update action items (task, assignee, status) for a recording."""
+    r = db.query(Recording).filter(Recording.id == recording_id).first()
+    if not r:
+        raise HTTPException(status_code=404, detail=f"Recording '{recording_id}' not found.")
+    if r.status != "ready":
+        raise HTTPException(status_code=400, detail="Recording must be in 'ready' state to update action items.")
+
+    # Validate & normalize
+    items = []
+    for ai in body.action_items:
+        if not ai.task.strip():
+            raise HTTPException(status_code=422, detail="Action item task cannot be empty.")
+        valid_statuses = {"Pending", "In Progress", "Completed"}
+        final_status = ai.status if ai.status in valid_statuses else "Pending"
+        items.append({
+            "task": ai.task.strip(),
+            "assignee": ai.assignee.strip() or "Unassigned",
+            "deadline": ai.deadline,
+            "status": final_status,
+        })
+
+    r.action_items = items
+    r.updated_at = datetime.now(timezone.utc)
+    db.commit()
+    db.refresh(r)
+    logger.info(f"Action items updated for recording {recording_id}")
+    return _to_detail(r)
+

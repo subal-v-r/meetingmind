@@ -5,7 +5,7 @@ MOMService — generates a formal Minutes of Meeting document.
 from sqlalchemy.orm import Session
 from app.models.recording import Recording
 from app.models.workspace import Workspace
-from app.services.providers.openai_llm import OpenAIMOMProvider
+from app.services.providers.groq_llm import GroqMOMProvider
 from app.core.logging import get_logger
 import json
 
@@ -14,7 +14,7 @@ logger = get_logger(__name__)
 
 class MOMService:
     def __init__(self):
-        self._provider = OpenAIMOMProvider()
+        self._provider = GroqMOMProvider()
 
     def _build_recording_data(self, r: Recording, title: str) -> str:
         """Format recording data into a structured string for MOM generation."""

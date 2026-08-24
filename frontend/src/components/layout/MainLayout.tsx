@@ -9,7 +9,7 @@ interface MainLayoutProps {
 
 export const MainLayout = ({ children, activeWorkspaceId, onSelectWorkspace }: MainLayoutProps) => {
     return (
-        <div className="flex h-screen w-screen overflow-hidden bg-slate-50">
+        <div className="flex h-screen w-screen overflow-hidden bg-slate-50 font-sans antialiased text-slate-900">
             {/* Left Sidebar */}
             <AppSidebar
                 activeWorkspaceId={activeWorkspaceId}

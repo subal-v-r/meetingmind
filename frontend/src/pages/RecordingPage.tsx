@@ -49,18 +49,18 @@ export const RecordingPage = () => {
         : '';
 
     return (
-        <div className="flex flex-col h-full bg-slate-100">
+        <div className="flex flex-col h-full bg-slate-50 animate-fade-in">
             {/* Top Navigation */}
-            <div className="h-16 bg-white border-b border-slate-200 flex items-center px-4 justify-between flex-shrink-0">
+            <div className="h-16 bg-white border-b border-slate-200 flex items-center px-6 justify-between flex-shrink-0">
                 <div className="flex items-center gap-4">
                     <button
-                        onClick={() => navigate('/')} // Or navigate to specific workspace
-                        className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
+                        onClick={() => navigate('/')}
+                        className="p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
                     >
                         <ArrowLeft size={20} />
                     </button>
                     <div>
-                        <h2 className="font-bold text-slate-800 leading-tight">{recording.filename}</h2>
+                        <h2 className="font-bold text-slate-900 leading-tight text-sm">{recording.filename}</h2>
                         <div className="text-xs font-medium text-slate-500 flex items-center gap-2">
                             <span>{new Date(recording.created_at).toLocaleDateString()}</span>
                             {isProcessing && (
@@ -77,10 +77,10 @@ export const RecordingPage = () => {
             </div>
 
             {/* Split Content Area */}
-            <div className="flex-1 overflow-hidden flex flex-col lg:flex-row p-4 gap-4">
+            <div className="flex-1 overflow-hidden flex flex-col lg:flex-row p-6 gap-6 max-w-[1600px] mx-auto w-full">
 
                 {/* Left Side: Player + Transcript */}
-                <div className="flex-1 flex flex-col min-w-0 flex-shrink gap-4 h-full">
+                <div className="flex-1 flex flex-col min-w-0 flex-shrink gap-6 h-full">
                     {/* Media Player */}
                     {isProcessing ? (
                         <div className="w-full bg-slate-900 rounded-2xl p-8 flex flex-col items-center justify-center text-slate-400 aspect-video shadow-lg">
@@ -104,7 +104,7 @@ export const RecordingPage = () => {
                     )}
 
                     {/* Live Transcript Panel */}
-                    <div className="flex-1 min-h-0">
+                    <div className="flex-1 min-h-0 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                         <LiveTranscript
                             segments={segments}
                             activeSegmentIndex={activeSegmentIndex}
@@ -114,7 +114,7 @@ export const RecordingPage = () => {
                 </div>
 
                 {/* Right Side: Intelligence Panel */}
-                <div className="w-full lg:w-[400px] xl:w-[450px] flex-shrink-0 flex flex-col h-full bg-white shadow-lg rounded-2xl overflow-hidden border border-slate-200">
+                <div className="w-full lg:w-[440px] flex-shrink-0 flex flex-col h-full bg-white shadow-sm rounded-2xl overflow-hidden border border-slate-200">
                     <MeetingIntelligence recording={recording} />
                 </div>
             </div>

@@ -1,9 +1,9 @@
 fastapi
-uvicorn
+uvicorn[standard]
 sqlalchemy
 pydantic
 pydantic-settings
-openai
+groq
 python-multipart
 aiofiles
 mutagen

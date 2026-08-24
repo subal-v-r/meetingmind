@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.models.chat_message import ChatMessage
 from app.models.recording import Recording
-from app.services.providers.openai_llm import OpenAIChatProvider
+from app.services.providers.groq_llm import GroqChatProvider
 from app.core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -16,7 +16,7 @@ logger = get_logger(__name__)
 
 class ChatService:
     def __init__(self):
-        self._provider = OpenAIChatProvider()
+        self._provider = GroqChatProvider()
 
     async def send_message(
         self, workspace_id: str, user_message: str, db: Session
