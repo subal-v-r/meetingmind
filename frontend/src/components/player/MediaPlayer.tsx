@@ -11,14 +11,17 @@ export const MediaPlayer = forwardRef<HTMLMediaElement, MediaPlayerProps>(
         const isVideo = fileType === 'video';
 
         return (
-            <div className={`w-full bg-slate-950 rounded-2xl overflow-hidden shadow-lg border border-slate-800 flex items-center justify-center ${isVideo ? 'aspect-video' : 'p-6 h-32'}`}>
+            <div
+                className={`w-full bg-slate-950 rounded-2xl overflow-hidden shadow-sm border border-slate-800 flex items-center justify-center ${!isVideo ? 'p-6 h-32' : 'mx-auto'}`}
+                style={isVideo ? { maxHeight: '60vh', aspectRatio: '16/9' } : undefined}
+            >
                 {isVideo ? (
                     <video
                         ref={ref as React.RefObject<HTMLVideoElement>}
                         src={fileUrl}
                         controls
                         controlsList="nodownload"
-                        className="w-full h-full outline-none"
+                        className="w-full h-full object-contain outline-none"
                         onTimeUpdate={onTimeUpdate}
                     />
                 ) : (

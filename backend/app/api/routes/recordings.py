@@ -257,7 +257,9 @@ async def update_action_items(
             "status": final_status,
         })
 
+    from sqlalchemy.orm.attributes import flag_modified
     r.action_items = items
+    flag_modified(r, "action_items")
     r.updated_at = datetime.now(timezone.utc)
     db.commit()
     db.refresh(r)
