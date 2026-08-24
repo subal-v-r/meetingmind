@@ -4,20 +4,22 @@ MeetingMind is an AI-powered meeting intelligence application designed to seamle
 
 ## 🖼️ Preview
 
-### Home Page & Workspace
+### Home Page
 ![MeetingMind Home Page](./images/homepage.png)
+
+### Workspace & AI Assistant
 ![MeetingMind Workspace](./images/workspace.png)
+![Meeting Assistant](./images/meeting-assistant.png)
 
 ### Recording, Video Replay & Transcript
 ![Video Replay and Transcript](./images/video-replay-transcript.png)
 
 ### Meeting Intelligence (Summary, Decisions & Action Items)
-![Meeting Summary](./images/meeting-summary.png)
-![Meeting Decisions](./images/decisions.png)
-![Meeting Action Items](./images/action-items.png)
-
-### AI Meeting Assistant
-![Meeting Assistant](./images/meeting-assistant.png)
+<p>
+  <img src="./images/meeting-summary.png" width="32%" alt="Meeting Summary" />
+  <img src="./images/decisions.png" width="32%" alt="Meeting Decisions" />
+  <img src="./images/action-items.png" width="32%" alt="Action Items" />
+</p>
 
 ### Minutes of Meeting (MOM) Export
 ![Export MOM](./images/export-mom.png)
