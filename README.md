@@ -1,6 +1,6 @@
-# 🎙️ Meeting Summarizer
+# 🧠 MeetingMind
 
-> Turn meeting recordings into structured insights — transcript, summary, key decisions, and action items — powered by OpenAI Whisper and GPT-4o-mini.
+> Turn meeting recordings into structured insights — transcript, summary, key decisions, and action items — inside a modern, persistent, ChatGPT-style Workspace. Powered by OpenAI Whisper and GPT-4o-mini.
 
 [![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111-green?logo=fastapi)](https://fastapi.tiangolo.com)
@@ -11,52 +11,23 @@
 
 ## ✨ Features
 
-- **Audio Upload** — Drag-and-drop or browse. Supports MP3, WAV, M4A, MP4, OGG, WebM (up to 25 MB)
-- **AI Transcription** — OpenAI Whisper converts speech to text accurately
-- **Smart Analysis** — GPT-4o-mini extracts structured insights in one pass
-- **Meeting Summary** — Concise plain-English overview of the meeting
-- **Key Points** — Most important discussion topics, numbered
-- **Key Decisions** — Only confirmed decisions (no hallucinations)
-- **Action Items** — Task + Assignee + Deadline, extracted with strict rules
-- **Searchable Transcript** — Collapsible, with live search highlighting and copy
-- **Download Summary** — Export the full summary as a Markdown file
-- **Meeting History** — Browse, revisit, retry, and delete past meetings
-- **Async Processing** — Upload returns instantly; frontend polls for progress
-- **Error Resilience** — Failed meetings show reason; retry with one click
+- **Multi-Workspace Environment** — Organize your recordings by project/company via persistent chat workspaces.
+- **Audio & Video Upload** — Supports MP3, WAV, M4A, MP4, OGG, WebM (up to 25 MB).
+- **Synchronized Media Player** — Click a transcript segment to instantly seek the video/audio to that exact moment.
+- **AI Transcription** — OpenAI Whisper converts speech to text accurately with precise timestamps.
+- **Meeting Intelligence Dashboard** — Tabbed panels for Executive Summary, Key Decisions, and Action Items with assignees and deadlines.
+- **AI Workspace Chat** — A ChatGPT-style chat that allows you to query information across ALL recordings within a workspace (multi-document RAG).
+- **MOM Generation Engine** — Dynamically output formal Minutes of Meetings (MOM) as instantly downloadable Markdown documents.
 
 ---
 
 ## 🏗️ Architecture
 
 ```
-AI Pipeline: Audio → Whisper (ASR) → GPT-4o-mini (LLM) → SQLite → React Dashboard
+AI Pipeline: Media → Whisper (ASR) → GPT-4o-mini (LLM) → SQLite → React Dashboard
 ```
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                    React Frontend                        │
-│  UploadZone → ProcessingStatus → Results Dashboard       │
-│  (Vite + TypeScript + Tailwind CSS)                     │
-└────────────────────┬────────────────────────────────────┘
-                     │  HTTP / REST (polling)
-┌────────────────────▼────────────────────────────────────┐
-│                 FastAPI Backend                          │
-│                                                         │
-│  POST /upload → BackgroundTask                          │
-│          ↓                                              │
-│  TranscriptionService (OpenAI Whisper)                  │
-│          ↓                                              │
-│  SummarizationService (GPT-4o-mini, JSON mode)          │
-│          ↓                                              │
-│  meeting_service.py (orchestration + file cleanup)      │
-│          ↓                                              │
-│  SQLite (SQLAlchemy + Alembic)                          │
-└─────────────────────────────────────────────────────────┘
-```
-
-### Provider Abstraction
-Both ASR and LLM providers implement protocol interfaces (`ASRProvider`, `LLMProvider`). 
-To switch from OpenAI to another provider, implement the interface and inject it — no route code changes needed.
+Both ASR and LLM providers implement protocol interfaces (`ASRProvider`, `LLMProvider`) to easily allow future engine swapping (e.g., Anthropic, Groq, local models) without changing core services.
 
 ---
 
@@ -66,10 +37,9 @@ To switch from OpenAI to another provider, implement the interface and inject it
 |-------|-----------|
 | Frontend | React 18, TypeScript, Vite, Tailwind CSS, Lucide Icons |
 | Backend | Python 3.11+, FastAPI, Uvicorn, Pydantic v2 |
-| Database | SQLite via SQLAlchemy (Alembic migrations) |
+| Database | SQLite via SQLAlchemy |
 | ASR | OpenAI Whisper API (`whisper-1`) |
 | LLM | OpenAI GPT-4o-mini (JSON mode + Pydantic validation) |
-| Testing | pytest, pytest-asyncio, FastAPI TestClient |
 
 ---
 
@@ -80,44 +50,27 @@ Meeting_summarizer/
 │
 ├── backend/
 │   ├── app/
-│   │   ├── api/routes/
-│   │   │   ├── meetings.py        # All meeting endpoints
-│   │   │   └── health.py          # GET /health
+│   │   ├── api/routes/          # Workspaces, recordings, chat routes
 │   │   ├── services/
-│   │   │   ├── providers/
-│   │   │   │   ├── base.py        # ASRProvider + LLMProvider protocols
-│   │   │   │   ├── openai_asr.py  # Whisper implementation
-│   │   │   │   └── openai_llm.py  # GPT-4o-mini + prompt engineering
-│   │   │   ├── transcription_service.py
-│   │   │   ├── summarization_service.py
-│   │   │   └── meeting_service.py # Processing pipeline orchestration
-│   │   ├── models/meeting.py      # SQLAlchemy ORM model
-│   │   ├── schemas/
-│   │   │   ├── meeting.py         # API request/response schemas
-│   │   │   └── analysis.py        # LLM output schema (strict Pydantic)
-│   │   ├── database/database.py
-│   │   ├── core/logging.py
-│   │   ├── config.py
-│   │   └── main.py
-│   ├── tests/
-│   │   ├── test_schemas.py
-│   │   ├── test_api.py
-│   │   └── test_meeting_service.py
-│   ├── uploads/                   # Temp audio storage (gitignored)
-│   │   └── .gitkeep
-│   ├── requirements.txt
-│   ├── pytest.ini
-│   └── .env.example
+│   │   │   ├── providers/       # LLM/ASR OpenAI abstractions
+│   │   │   └── *service.py      # Recording, Chat, and MOM services
+│   │   ├── models/              # SQLAlchemy (Workspace, Recording, ChatMessage)
+│   │   ├── schemas/             # Pydantic validation interfaces
+│   │   └── main.py              # FastAPI init
+│   ├── .env.example
+│   └── requirements.txt
 │
 ├── frontend/
 │   ├── src/
-│   │   ├── components/            # Reusable UI components
-│   │   ├── pages/                 # UploadPage, ResultsPage, HistoryPage
-│   │   ├── services/api.ts        # All API calls centralized here
-│   │   ├── hooks/useMeetingPolling.ts
-│   │   ├── types/meeting.ts       # TypeScript interfaces
-│   │   ├── App.tsx                # React Router setup
-│   │   └── main.tsx
+│   │   ├── components/
+│   │   │   ├── layout/          # Sidebar, Main content layout
+│   │   │   ├── intelligence/    # Summary, Decisions, Actions, MOM modals
+│   │   │   ├── player/          # Media player
+│   │   │   ├── transcript/      # Sync scrolling logic
+│   │   │   └── workspace/       # Chat, File Uploaders
+│   │   ├── pages/               # WorkspacePage, RecordingPage
+│   │   ├── services/api.ts
+│   │   └── hooks/               # Polling and media synchronization hooks
 │   ├── .env.example
 │   └── package.json
 │
@@ -145,17 +98,16 @@ cd Meeting_summarizer
 
 ---
 
-### 2. Backend Setup
+### 2. Backend Setup & Database
+
+The backend default uses SQLite. **No external database server is required.** The SQLite database is automatically created locally on the first backend startup.
 
 ```bash
 cd backend
-
-# Create and activate virtual environment
 python -m venv venv
 
 # Windows
 venv\Scripts\activate
-
 # macOS/Linux
 source venv/bin/activate
 
@@ -173,13 +125,11 @@ cp .env.example .env
 
 ```bash
 cd frontend
-
-# Install dependencies
 npm install
 
 # Configure environment variables
 cp .env.example .env
-# VITE_API_BASE_URL is already set to http://localhost:8000
+# VITE_API_BASE_URL securely points to local backend route
 ```
 
 ---
@@ -191,8 +141,6 @@ cp .env.example .env
 ```bash
 uvicorn app.main:app --reload --port 8000
 ```
-
-Backend will be available at: `http://localhost:8000`  
 API docs: `http://localhost:8000/docs`
 
 ### Start the frontend (from `/frontend`):
@@ -200,8 +148,7 @@ API docs: `http://localhost:8000/docs`
 ```bash
 npm run dev
 ```
-
-Frontend will be available at: `http://localhost:5173`
+Frontend: `http://localhost:5173`
 
 > 💡 Keep both terminals open while using the app.
 
@@ -210,111 +157,27 @@ Frontend will be available at: `http://localhost:5173`
 ## 🌍 Environment Variables
 
 ### `backend/.env`
-
 | Variable | Description | Default |
 |---|---|---|
 | `OPENAI_API_KEY` | **Required.** Your OpenAI API key | — |
-| `DATABASE_URL` | SQLite DB path | `sqlite:///./meeting_summarizer.db` |
-| `MAX_FILE_SIZE_MB` | Max upload size in MB | `25` |
-| `OPENAI_MODEL` | LLM model for analysis | `gpt-4o-mini` |
-| `OPENAI_WHISPER_MODEL` | Whisper model for ASR | `whisper-1` |
-| `DEBUG` | Enable debug logging | `false` |
+| `DATABASE_URL` | SQLite DB path | `sqlite:///./meeting_ai.db` |
+| `UPLOAD_DIR` | Recordings directory | `uploads` |
+| `FRONTEND_URL` | CORS frontend origin | `http://localhost:5173` |
 
 ### `frontend/.env`
-
 | Variable | Description | Default |
 |---|---|---|
 | `VITE_API_BASE_URL` | Backend API base URL | `http://localhost:8000` |
 
 ---
 
-## 📡 API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/meetings/upload` | Upload audio; returns `meeting_id` immediately |
-| `GET` | `/api/meetings` | List all meetings (ordered by newest) |
-| `GET` | `/api/meetings/{id}` | Full result — poll until `status: completed\|failed` |
-| `GET` | `/api/meetings/{id}/transcript` | Transcript only |
-| `DELETE` | `/api/meetings/{id}` | Delete meeting and file |
-| `POST` | `/api/meetings/{id}/reprocess` | Retry a failed meeting |
-| `GET` | `/health` | Health check with DB connectivity |
-
----
-
-## 🧪 Running Tests
-
-```bash
-cd backend
-pytest -v
-```
-
-Test coverage includes:
-- Pydantic schema validation (good + bad inputs)
-- API endpoints (health, list, upload validation, 404s)
-- Meeting service pipeline (mocked ASR + LLM, success + failure paths)
-
----
-
-## 🤖 AI Pipeline Details
-
-### Speech-to-Text (Whisper)
-- Provider: OpenAI Whisper API (`whisper-1`)
-- File size validated against 25 MB API limit
-- Audio duration extracted via `mutagen`
-
-### Meeting Analysis (GPT-4o-mini)
-- Uses JSON mode for guaranteed structured output
-- Temperature set to 0.1 for reliable, factual extraction
-- Strict system prompt instructs the model to:
-  - Only use information from the transcript
-  - Not invent people, decisions, or deadlines
-  - Use "Unassigned" when assignee is unclear
-  - Use `null` when no deadline is mentioned
-- Response validated with Pydantic before storage
-- Falls back to a clear error if response is invalid
-
-### Extracted Output Schema
-
-```json
-{
-  "summary": "Brief overview of the meeting",
-  "key_points": ["Discussion point 1", "..."],
-  "decisions": ["Confirmed decision 1", "..."],
-  "action_items": [
-    {
-      "task": "Prepare UI designs",
-      "assignee": "Sarah",
-      "deadline": "Friday"
-    }
-  ]
-}
-```
-
----
-
-## 📸 Screenshots
-
-> _Add screenshots here after running the application._
-
-| Upload Page | Processing | Results Dashboard |
-|-------------|------------|-------------------|
-| *(screenshot)* | *(screenshot)* | *(screenshot)* |
-
----
-
 ## 💡 Example Workflow
 
 1. Open `http://localhost:5173`
-2. Drag and drop a `.mp3` or `.wav` meeting recording
-3. Click **"Analyze Meeting"**
-4. Watch the processing steps animate in real time
-5. View the full dashboard: summary, decisions, action items, transcript
-6. Download the summary as a Markdown file
-7. Visit `/history` to see all past meetings
-
----
-
-## 📄 License
-
-MIT — see [LICENSE](LICENSE) for details.
+2. At the left sidebar, click **New Workspace** to create a fresh working context.
+3. Drag and drop a recording into the workspace.
+4. Watch the processing animation as the backend automatically extracts transcription and intelligence via Async Jobs.
+5. Once completed, click the recording to enter the Media Dashboard.
+6. Play the media, watch the captions highlight synchronously, and review the structured AI Action items instantly.
+7. Return to the Workspace to chat with the AI about everything discussed.
+8. Click **Generate MOM** for an instant copy-able Markdown summary to report back to your team.
